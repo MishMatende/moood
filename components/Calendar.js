@@ -1,5 +1,6 @@
+"use client";
 import { baseRating, demoData, gradients } from "@/utils";
-import React from "react";
+import React, { useState } from "react";
 
 const months = {
   January: "Jan",
@@ -27,15 +28,36 @@ const dayList = [
 ];
 
 export default function Calendar(props) {
-  const { demo } = props;
+  const { demo, completeData, handleSetMood } = props;
 
-  const year = 2025;
-  const month = "March";
-  const monthNow = new Date(year, Object.keys(months).indexOf(month), 1);
+  const now = new Date();
+  const currMonth = now.getMonth();
+  const [selectedMonth, setSelectedMonth] = useState(
+    Object.keys(months)[currMonth]
+  );
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+
+  const numericMonth = Object.keys(months).indexOf(selectedMonth);
+  const data = completeData?.[selectedYear]?.[numericMonth] || {};
+  function handleIncrementMonth(val) {
+    // value +1 -1
+    // if we hit the bounds of the months, then we can adjust
+    // the year that is displayed
+  }
+
+  console.log("SELECTED MONTH: ", selectedMonth);
+
+  // const year = 2025;
+  // const month = "March";
+  const monthNow = new Date(
+    selectedYear,
+    Object.keys(months).indexOf(selectedMonth),
+    1
+  );
   const firstDayOfMonth = monthNow.getDay();
   const daysInMonth = new Date(
-    year,
-    Object.keys(month).indexOf(month) + 1,
+    selectedYear,
+    Object.keys(selectedMonth).indexOf(selectedMonth) + 1,
     0
   ).getDate();
 
@@ -65,8 +87,8 @@ export default function Calendar(props) {
 
               let color = demo
                 ? gradients.indigo[baseRating[dayIndex]]
-                : dayIndex in demoData
-                ? gradients.indigo[demoData[dayIndex]]
+                : dayIndex in data
+                ? gradients.indigo[data[dayIndex]]
                 : "white";
 
               return (
